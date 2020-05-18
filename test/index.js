@@ -6,6 +6,7 @@ const path = require('path');
 const prettier = require('prettier');
 const { NodeVM } = require('vm2');
 const _ = require('lodash');
+const helper = require('@imgcook/dsl-helper');
 const data = require('./data');
 
 const vm = new NodeVM({
@@ -22,6 +23,7 @@ co(function*() {
   const renderInfo = vm.run(code)(data, {
     prettier: prettier,
     _: _,
+    helper,
     responsive: {
       width: 750,
       viewportWidth: 375
