@@ -125,8 +125,8 @@ function exportMod(schema, option) {
     let props = '';
 
     Object.keys(schema.props).forEach((key) => {
-      if ([ 'className', 'style', 'text', 'src', 'key', 'codeStyle', 'onClick', 'lines' ].indexOf(key) === -1) {
-        props += ` ${key}={${parseProps(schema.props[key])}}`;
+      if ([ 'className', 'style', 'text', 'key', 'codeStyle', 'onClick', 'lines' ].indexOf(key) === -1) {
+        props += ` ${key}=${parseProps(schema.props[key])}`;
       }
       if (key === 'codeStyle') {
         if (JSON.stringify(schema.props[key]) !== '{}') {
@@ -144,14 +144,9 @@ function exportMod(schema, option) {
         xml = `<span ${classString}${props}>${innerText || ''}</span>`;
         break;
       case 'image':
-        // if (!props.match('onClick')) {
-        //   props += ' aria-hidden={true}';
-        // }
         if (schema.props.source && schema.props.source.uri) {
           xml = `<img ${classString}${props} />`;
         } else {
-          // let source = parseProps(schema.props.src);
-          // source = (source && `source={{uri: ${source}}}`) || '';
           xml = `<img ${classString}${props} />`;
         }
         break;
@@ -167,7 +162,7 @@ function exportMod(schema, option) {
         }
         break;
       default:
-        // collectImports(schema.componentName);
+        collectImports(schema.componentName);
         if (schema.children && schema.children.length && Array.isArray(schema.children)) {
           xml = `<${componentName}${classString}${props}>${transform(schema.children)}</${componentName}>`;
         } else if (typeof schema.children === 'string') {
