@@ -293,7 +293,7 @@ function exportMod(schema, option) {
   transform(schema);
 
   // output
-  const prettierJsOpt = {
+  const prettierHtmlOpt = {
     parser: 'html',
     printWidth: 120,
     singleQuote: true
@@ -301,8 +301,13 @@ function exportMod(schema, option) {
   const prettierCssOpt = {
     parser: 'css'
   };
+  const prettierJsOpt = {
+    parser: 'babel',
+    printWidth: 120,
+    singleQuote: true
+  };
   const htmlBody = generateRender(schema);
-  console.log(htmlBody);
+
   const indexValue = prettier.format(
     `
   <!DOCTYPE html>
@@ -311,14 +316,21 @@ function exportMod(schema, option) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script src="./index.js"></script>
   </head>
   <body>
   ${htmlBody}
   </body>
   </html>
   `,
-    prettierJsOpt
+    prettierHtmlOpt
   );
+
+  const indexValueJs = prettier.format(`window.onload = () => {
+  const data = {};
+  const $ = window.document.querySelector.bind(window.document);
+};`, prettierJsOpt);
 
   return {
     panelDisplay: [
@@ -327,6 +339,11 @@ function exportMod(schema, option) {
         panelValue: indexValue,
         panelType: 'html',
         panelImports: imports
+      },
+      {
+        panelName: `${fileName}.js`,
+        panelValue: indexValueJs,
+        panelType: 'js'
       },
       {
         panelName: `${fileName}.css`,

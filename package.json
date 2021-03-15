@@ -11,7 +11,7 @@
     "thunkify": "^2.1.2",
     "vm2": "^3.5.2",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
+    "webpack-cli": "^3.3.12",
     "xml-beautifier": "^0.4.0",
     "xtemplate": "^4.6.1",
     "xtpl": "^3.4.0"
