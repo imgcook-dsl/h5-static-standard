@@ -20,7 +20,7 @@ const {
 function exportMod(schema, option) {
   const { prettier, scale = 1, componentsMap, _, responsive } = option;
 
-  const fileName = schema.fileName;
+  const fileName = schema.fileName || 'index';
 
   // imports
   let imports = [];
