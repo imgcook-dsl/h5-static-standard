@@ -156,6 +156,18 @@ const parseStyle = (style, option = {}) => {
         styleData.push(`${parseCamelToLine(key)}: ${value}`);
       }
     } else {
+      if (key === 'fontFamily') {
+        const items = value.split(',');
+        const newItems = [];
+        items.length && items.map(item => {
+          if (/\s/g.test(item)) {
+            newItems.push(`"${item.replace(/(^\s*)|(\s*$)/g, "")}"`)
+          } else {
+            newItems.push(item);
+          }
+        });
+        value = newItems.join(',');
+      }
       styleData.push(`${parseCamelToLine(key)}: ${value}`);
     }
   }
