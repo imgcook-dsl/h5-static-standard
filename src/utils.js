@@ -135,7 +135,7 @@ const parseStyle = (style, option = {}) => {
   const styleData = [];
   for (let key in style) {
     let value = style[key];
-    if (boxStyleList.indexOf(key) != -1) {
+    if (boxStyleList.indexOf(key) != -1 && typeof value === 'string' && value.match('px')) {
       if (toVW) {
         value = (parseInt(value) / _w).toFixed(2);
         value = value == 0 ? value : value + 'vw';
