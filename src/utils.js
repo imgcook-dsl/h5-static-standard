@@ -150,7 +150,7 @@ const parseStyle = (style, option = {}) => {
       }
       styleData.push(`${_.kebabCase(key)}: ${value}`);
     } else if (noUnitStyles.indexOf(key) != -1) {
-      styleData.push(`${_.kebabCase(key)}: ${parseFloat(value)}`);
+      styleData.push(`${_.kebabCase(key)}: ${value}`);
     } else {
       styleData.push(`${_.kebabCase(key)}: ${value}`);
     }
