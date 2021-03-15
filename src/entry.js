@@ -93,6 +93,7 @@ function exportMod(schema, option) {
     let commonStyles = {};
     let codeStyles = {};
     Object.keys(schema.props.style || {}).forEach((key) => {
+      if (key === 'lines') return;
       if (isExpression(schema.props.style[key])) {
         codeStyles[key] = schema.props.style[key];
       } else {
