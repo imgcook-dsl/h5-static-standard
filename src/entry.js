@@ -308,28 +308,28 @@ function exportMod(schema, option) {
       {
         panelName: `${fileName}.html`,
         panelValue: indexValue,
-        panelType: 'html',
+        panelType: 'BuilderRaxView',
         panelImports: imports
       },
       {
         panelName: `${fileName}.js`,
         panelValue: indexValueJs,
-        panelType: 'js'
+        panelType: 'BuilderRaxIndex'
       },
       {
         panelName: `${fileName}.css`,
         panelValue: prettier.format(styles.join('\n'), prettierCssOpt),
-        panelType: 'css'
+        panelType: 'BuilderRaxStyle'
       },
       {
         panelName: `${fileName}.vw.css`,
         panelValue: prettier.format(styles4vw.join('\n'), prettierCssOpt),
-        panelType: 'css'
+        panelType: 'BuilderRaxStyle'
       },
       {
         panelName: `${fileName}.rem.css`,
         panelValue: prettier.format(styles4rem.join('\n'), prettierCssOpt),
-        panelType: 'css'
+        panelType: 'BuilderRaxStyle'
       }
     ],
     noTemplate: true
