@@ -124,7 +124,7 @@ function exportMod(schema, option) {
     let props = '';
 
     Object.keys(schema.props).forEach((key) => {
-      if ([ 'className', 'style', 'text', 'src', 'key', 'codeStyle', 'onClick' ].indexOf(key) === -1) {
+      if ([ 'className', 'style', 'text', 'src', 'key', 'codeStyle', 'onClick', 'lines' ].indexOf(key) === -1) {
         props += ` ${key}={${parseProps(schema.props[key])}}`;
       }
       if (key === 'codeStyle') {
@@ -132,22 +132,7 @@ function exportMod(schema, option) {
           props += ` style={${parseProps(schema.props[key])}}`;
         }
       }
-
-      // fix attr when type is not text
-      // if (type !== 'text' && [ 'text' ].includes(key)) {
-      //   props += ` ${key}={${parseProps(schema.props[key])}}`;
-      // }
-
-      // 无障碍能力
-      // if ([ 'onClick' ].indexOf(key) === 0) {
-      //   props += ` accessible={true} role="link" aria-label={\`${getText(schema)}\`}`;
-      // }
     });
-
-    // 无障碍能力
-    // if (type === 'link' && !props.match('accessible')) {
-    //   props += ` accessible={true} aria-label={\`${getText(schema)}\`}`;
-    // }
 
     switch (type) {
       case 'text':
@@ -181,7 +166,7 @@ function exportMod(schema, option) {
         }
         break;
       default:
-        collectImports(schema.componentName);
+        // collectImports(schema.componentName);
         if (schema.children && schema.children.length && Array.isArray(schema.children)) {
           xml = `<${componentName}${classString}${props}>${transform(schema.children)}</${componentName}>`;
         } else if (typeof schema.children === 'string') {
@@ -191,20 +176,6 @@ function exportMod(schema, option) {
         }
     }
 
-    // if (schema.loop) {
-    //   const parseLoopData = parseLoop(schema.loop, schema.loopArgs, xml, statesData, schema);
-    //   xml = parseLoopData.value;
-    //   useState = useState.concat(parseLoopData.hookState);
-    // }
-
-    // xml = replaceState(xml);
-
-    // if (schema.condition) {
-    //   xml = parseCondition(schema.condition, xml);
-    // }
-    // if (schema.loop || (schema.condition && typeof schema.condition === 'string')) {
-    //   xml = `{${xml}}`;
-    // }
     return xml;
   };
 
