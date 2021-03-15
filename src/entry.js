@@ -88,7 +88,7 @@ function exportMod(schema, option) {
     const componentName = schema.componentName;
     const type = schema.componentName.toLowerCase();
     const className = schema.props && schema.props.className;
-    const classString = className ? ` className="${className}"` : '';
+    const classString = className ? ` class="${className}"` : '';
 
     let commonStyles = {};
     let codeStyles = {};
