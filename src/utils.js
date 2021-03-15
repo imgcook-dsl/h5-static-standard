@@ -1,5 +1,5 @@
 // no unit style
-const noUnitStyles = [ 'opacity', 'fontWeight' ];
+const noUnitStyles = [ 'opacity', 'fontWeight', 'WebkitLineClamp' ];
 
 // box relative style
 const boxStyleList = [
@@ -123,7 +123,7 @@ const deepClone = obj => {
 
 // convert to responsive unit, such as vw
 const parseStyle = (style, option = {}) => {
-  const { toVW, toREM, _, responsive } = option;
+  const { toVW, toREM, responsive } = option;
   const width = responsive.width || 750;
   const viewportWidth = responsive.viewportWidth || 375;
   const htmlFontsize = viewportWidth ? viewportWidth / 10 : null;
@@ -148,11 +148,15 @@ const parseStyle = (style, option = {}) => {
         value = parseInt(value).toFixed(2);
         value = value == 0 ? value : value + 'px';
       }
-      styleData.push(`${_.kebabCase(key)}: ${value}`);
+      styleData.push(`${parseCamelToLine(key)}: ${value}`);
     } else if (noUnitStyles.indexOf(key) != -1) {
-      styleData.push(`${_.kebabCase(key)}: ${value}`);
+      if (typeof value === 'string' && value.match('px')) {
+        styleData.push(`${parseCamelToLine(key)}: ${parseFloat(value)}`);
+      } else {
+        styleData.push(`${parseCamelToLine(key)}: ${value}`);
+      }
     } else {
-      styleData.push(`${_.kebabCase(key)}: ${value}`);
+      styleData.push(`${parseCamelToLine(key)}: ${value}`);
     }
   }
   return styleData.join(';');
