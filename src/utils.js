@@ -160,7 +160,7 @@ const parseStyle = (style, option = {}) => {
         const items = value.split(',');
         const newItems = [];
         items.length && items.map(item => {
-          if (/\s/g.test(item)) {
+          if (/\s/g.test(item) && !/\"/g.test(item)) {
             newItems.push(`"${item.replace(/(^\s*)|(\s*$)/g, "")}"`)
           } else {
             newItems.push(item);
