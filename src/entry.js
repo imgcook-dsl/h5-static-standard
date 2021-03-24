@@ -125,7 +125,7 @@ function exportMod(schema, option) {
     let props = '';
 
     Object.keys(schema.props).forEach((key) => {
-      if ([ 'className', 'style', 'text', 'key', 'codeStyle', 'onClick', 'lines' ].indexOf(key) === -1) {
+      if ([ 'className', 'style', 'text', 'key', 'codeStyle', 'onClick', 'lines', 'dealGradient' ].indexOf(key) === -1) {
         props += ` ${key}=${parseProps(schema.props[key])}`;
       }
       if (key === 'codeStyle') {
