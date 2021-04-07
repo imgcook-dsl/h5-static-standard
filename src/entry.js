@@ -158,7 +158,7 @@ function exportMod(schema, option) {
         if (schema.children && schema.children.length) {
           xml = `<div${classString}${props}>${transform(schema.children)}</div>`;
         } else {
-          xml = `<div${classString}${props} />`;
+          xml = `<div${classString}${props} ></div>`;
         }
         break;
       default:
