@@ -67,6 +67,8 @@ function exportMod(schema, option) {
 
   const _ratio = width / viewportWidth;
 
+  let isPage = true;
+
   const collectImports = (componentName) => {
     let componentMap = componentsMap[componentName] || {};
     let packageName = componentMap.package || componentMap.packageName || componentName;
@@ -134,7 +136,6 @@ function exportMod(schema, option) {
         }
       }
     });
-
     switch (type) {
       case 'text':
         let innerText = parseProps(schema.props.text || schema.text, true);
@@ -176,15 +177,21 @@ function exportMod(schema, option) {
   };
 
   // parse schema
-  const transform = (schema) => {
+  const transform = (schema, flag) => {
     let result = '';
     const blockName = schema.fileName || schema.id;
+    if (flag && schema.componentName === 'Page') {
+      isPage = true;
+    }
     if (Array.isArray(schema)) {
       schema.forEach((layer) => {
         result += transform(layer);
       });
     } else {
-      const type = schema.componentName.toLowerCase();
+      let type = schema.componentName.toLowerCase();
+      if (isPage && type === 'block') {
+        type = 'div';
+      }
 
       if ([ 'page' ].indexOf(type) !== -1 || blockName === fileName) {
         // 容器组件处理: state/method/dataSource/lifeCycle
@@ -257,7 +264,7 @@ function exportMod(schema, option) {
   }
 
   // start parse schema
-  transform(schema);
+  transform(schema, true);
 
   // output
   const prettierHtmlOpt = {
