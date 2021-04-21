@@ -68,6 +68,7 @@ function exportMod(schema, option) {
   const _ratio = width / viewportWidth;
 
   let isPage = true;
+  let htmlBody = '';
 
   const collectImports = (componentName) => {
     let componentMap = componentsMap[componentName] || {};
@@ -186,6 +187,7 @@ function exportMod(schema, option) {
     if (Array.isArray(schema)) {
       schema.forEach((layer) => {
         result += transform(layer);
+        htmlBody += result;
       });
     } else {
       let type = schema.componentName.toLowerCase();
@@ -252,7 +254,7 @@ function exportMod(schema, option) {
         result += generateRender(schema);
       }
     }
-
+    htmlBody += result;
     return result;
   };
 
@@ -280,7 +282,7 @@ function exportMod(schema, option) {
     printWidth: 120,
     singleQuote: true
   };
-  const htmlBody = generateRender(schema);
+  // const htmlBody = generateRender(schema);
 
   const indexValue = prettier.format(
     `
