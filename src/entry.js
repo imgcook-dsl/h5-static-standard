@@ -25,14 +25,6 @@ function exportMod(schema, option) {
   // imports
   let imports = [];
 
-  // imports mods
-  let importMods = [];
-
-  // inline style
-  const style = {};
-
-  const styleRpx = {};
-
   // styles
   const styles = [];
 
@@ -43,21 +35,6 @@ function exportMod(schema, option) {
   // Global Public Functions
   const utils = [];
 
-  // states
-  let statesData = null;
-
-  // useState
-  let useState = [];
-
-  // methods
-  const methods = [];
-
-  // life cycles
-  let lifeCycles = [];
-
-  // init
-  const init = [];
-
   const width = responsive.width || 750;
   const viewportWidth = responsive.viewportWidth || 375;
   const htmlFontsize = viewportWidth ? viewportWidth / 10 : null;
@@ -67,7 +44,7 @@ function exportMod(schema, option) {
 
   const _ratio = width / viewportWidth;
 
-  let isPage = true;
+  let isPage = false;
   let htmlBody = '';
 
   const collectImports = (componentName) => {
@@ -173,7 +150,6 @@ function exportMod(schema, option) {
           xml = `<${componentName}${classString}${props} />`;
         }
     }
-
     return xml;
   };
 
@@ -187,7 +163,6 @@ function exportMod(schema, option) {
     if (Array.isArray(schema)) {
       schema.forEach((layer) => {
         result += transform(layer);
-        htmlBody += result;
       });
     } else {
       let type = schema.componentName.toLowerCase();
@@ -195,66 +170,9 @@ function exportMod(schema, option) {
         type = 'div';
       }
 
-      if ([ 'page' ].indexOf(type) !== -1 || blockName === fileName) {
-        // 容器组件处理: state/method/dataSource/lifeCycle
-        const states = [];
-
-        if (schema.state) {
-          states.push(`state = ${toString(schema.state)}`);
-          statesData = toString(schema.state);
-        }
-
-        if (schema.methods) {
-          Object.keys(schema.methods).forEach((name) => {
-            const { params, content } = parseFunction(schema.methods[name]);
-            methods.push(`function ${name}(${params}) {${content}}`);
-          });
-        }
-
-        if (schema.dataSource && Array.isArray(schema.dataSource.list)) {
-          schema.dataSource.list.forEach((item) => {
-            if (typeof item.isInit === 'boolean' && item.isInit) {
-              init.push(`${item.id}();`);
-            } else if (typeof item.isInit === 'string') {
-              init.push(`if (${parseProps(item.isInit)}) { ${item.id}(); }`);
-            }
-            const parseDataSourceData = parseDataSource(item, imports);
-            methods.push(parseDataSourceData.value);
-            imports = parseDataSourceData.imports;
-          });
-
-          if (schema.dataSource.dataHandler) {
-            const { params, content } = parseFunction(schema.dataSource.dataHandler);
-            methods.push(`const dataHandler = (${params}) => {${content}}`);
-            init.push(`dataHandler()`);
-          }
-        }
-
-        if (schema.lifeCycles) {
-          lifeCycles = parseLifeCycles(schema, init);
-        }
-
-        if (statesData) {
-          useState.push(parseState(statesData));
-        }
-      } else if ([ 'block' ].indexOf(type) !== -1) {
-        let props = '';
-        Object.keys(schema.props).forEach((key) => {
-          if ([ 'className', 'style', 'text', 'src', 'key' ].indexOf(key) === -1) {
-            props += ` ${key}={${parseProps(schema.props[key])}}`;
-          }
-        });
-
-        result += `<${line2Hump(blockName)} ${props} />`;
-
-        importMods.push({
-          import: `import ${line2Hump(blockName)} from '../${blockName}';`
-        });
-      } else {
-        result += generateRender(schema);
-      }
+      result += generateRender(schema);
+      htmlBody = generateRender(schema);
     }
-    htmlBody += result;
     return result;
   };
 
