@@ -63,6 +63,8 @@ function exportMod(schema, option) {
     }
   };
 
+  let classNames = [];
+
   // generate render xml
   const generateRender = (schema) => {
     const componentName = schema.componentName;
@@ -83,7 +85,8 @@ function exportMod(schema, option) {
 
     schema.props.codeStyle = codeStyles;
 
-    if (className) {
+    if (className && classNames.indexOf(className) === -1) {
+      classNames.push(className);
       styles.push(`
         .${className} {
           ${parseStyle(commonStyles, { _, responsive })}
@@ -169,7 +172,6 @@ function exportMod(schema, option) {
       if (isPage && type === 'block') {
         type = 'div';
       }
-
       result += generateRender(schema);
       htmlBody = generateRender(schema);
     }
@@ -185,7 +187,6 @@ function exportMod(schema, option) {
 
   // start parse schema
   transform(schema, true);
-
   // output
   const prettierHtmlOpt = {
     parser: 'html',
@@ -201,7 +202,6 @@ function exportMod(schema, option) {
     singleQuote: true
   };
   // const htmlBody = generateRender(schema);
-
   const indexValue = prettier.format(
     `
   <!DOCTYPE html>
