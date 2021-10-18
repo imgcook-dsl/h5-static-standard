@@ -310,143 +310,6 @@ const replaceState = render => {
   return render.replace(re, stateName);
 };
 
-// replace state
-const parseLifeCycles = (schema, init) => {
-  let lifeCycles = [];
-  if (!schema.lifeCycles['_constructor'] && init) {
-    schema.lifeCycles['_constructor'] = `function _constructor() {}`;
-  }
-
-  Object.keys(schema.lifeCycles).forEach(name => {
-    let { params, content } = parseFunction(schema.lifeCycles[name]);
-    content = replaceState(content);
-    switch (name) {
-      case '_constructor': {
-        init.push(content);
-        lifeCycles.unshift(`
-          // constructor
-          useState(()=>{
-            ${init.join('\n')}
-          })
-        `);
-        break;
-      }
-      case 'componentDidMount': {
-        lifeCycles.push(`
-          // componentDidMount
-          useEffect(()=>{
-            ${content}
-          }, [])
-        `);
-        break;
-      }
-      case 'componentDidUpdate': {
-        lifeCycles.push(`
-          // componentDidUpdate
-          useEffect(()=>{
-            ${content}
-          })
-        `);
-        break;
-      }
-      case 'componentWillUnMount': {
-        lifeCycles.push(`
-          // componentWillUnMount
-          useEffect(()=>{
-            return ()=>{
-              ${content}
-            }
-          }, [])
-        `);
-        break;
-      }
-    }
-  });
-  return lifeCycles;
-};
-
-const existImport = (imports, singleImport) => {
-  let exist = false;
-  imports.forEach(item => {
-    if (item.import === singleImport) {
-      exist = true;
-    }
-  });
-  return exist;
-};
-
-// parse async dataSource
-const parseDataSource = (data, imports) => {
-  const name = data.id;
-  const { uri, method, params } = data.options;
-  const action = data.type;
-  let payload = {};
-  let singleImport;
-
-  switch (action) {
-    case 'fetch':
-      singleImport = `import {fetch} from 'whatwg-fetch';`;
-      if (!existImport(imports, singleImport)) {
-        imports.push({
-          import: singleImport,
-          package: 'whatwg-fetch',
-          version: '^3.0.0'
-        });
-      }
-      payload = {
-        method: method
-      };
-
-      break;
-    case 'jsonp':
-      singleImport = `import {fetchJsonp} from 'fetch-jsonp';`;
-      if (!existImport(imports, singleImport)) {
-        imports.push({
-          import: singleImport,
-          package: 'fetch-jsonp',
-          version: '^1.1.3'
-        });
-      }
-      break;
-  }
-
-  Object.keys(data.options).forEach(key => {
-    if (['uri', 'method', 'params'].indexOf(key) === -1) {
-      payload[key] = toString(data.options[key]);
-    }
-  });
-
-  let comma = isEmptyObj(payload) ? '' : ',';
-  // params parse should in string template
-  if (params) {
-    payload = `${toString(payload).slice(0, -1)} ${comma} body: ${
-      isExpression(params) ? parseProps(params) : toString(params)
-    }}`;
-  } else {
-    payload = toString(payload);
-  }
-
-  let result = `{
-  return ${action}(${parseProps(uri)}, ${toString(payload)})
-    .then((response) => response.json())
-`;
-
-  if (data.dataHandler) {
-    const { params, content } = parseFunction(data.dataHandler);
-    result += `.then((${params}) => {${content}})
-    .catch((e) => {
-      console.log('error', e);
-    })
-  `;
-  }
-
-  result += '}';
-
-  return {
-    value: `function ${name}() ${result}`,
-    imports
-  };
-};
 
 // get children text
 const getText = schema => {
@@ -475,17 +338,14 @@ module.exports = {
   toString,
   transComponentsMap,
   line2Hump,
-  existImport,
   toUpperCaseStart,
   parseStyle,
   deepClone,
-  parseDataSource,
   parseFunction,
   parseLoop,
   parseCondition,
   parseProps,
   parseState,
-  parseLifeCycles,
   replaceState,
   generateCSS,
   getText,
