@@ -1,19 +1,7 @@
 const {
-  toString,
   existImport,
-  parseLoop,
   parseStyle,
-  deepClone,
-  parseFunction,
   parseProps,
-  parseState,
-  parseLifeCycles,
-  replaceState,
-  parseCondition,
-  generateCSS,
-  parseDataSource,
-  line2Hump,
-  getText,
   isExpression
 } = require('./utils');
 
@@ -201,7 +189,6 @@ function exportMod(schema, option) {
     printWidth: 120,
     singleQuote: true
   };
-  // const htmlBody = generateRender(schema);
   const indexValue = prettier.format(
     `
   <!DOCTYPE html>
