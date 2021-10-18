@@ -1,12 +1,11 @@
 const {
-  existImport,
   parseStyle,
   parseProps,
   isExpression
 } = require('./utils');
 
 function exportMod(schema, option) {
-  const { prettier, scale = 1, componentsMap, _, responsive } = option;
+  const { prettier, scale = 1, _, responsive } = option;
 
   const fileName = schema.fileName || 'index';
 
@@ -34,22 +33,6 @@ function exportMod(schema, option) {
 
   let isPage = false;
   let htmlBody = '';
-
-  const collectImports = (componentName) => {
-    let componentMap = componentsMap[componentName] || {};
-    let packageName = componentMap.package || componentMap.packageName || componentName;
-    if (packageName && [ 'view', 'image', 'text', 'picture' ].indexOf(packageName.toLowerCase()) >= 0) {
-      packageName = `rax-${packageName.toLowerCase()}`;
-    }
-    const singleImport = `import ${componentName} from '${packageName}'`;
-    if (!existImport(imports, singleImport)) {
-      imports.push({
-        import: singleImport,
-        package: packageName,
-        version: componentMap.dependenceVersion || '*'
-      });
-    }
-  };
 
   let classNames = [];
 
@@ -132,7 +115,6 @@ function exportMod(schema, option) {
         }
         break;
       default:
-        collectImports(schema.componentName);
         if (schema.children && schema.children.length && Array.isArray(schema.children)) {
           xml = `<${componentName}${classString}${props}>${transform(schema.children)}</${componentName}>`;
         } else if (typeof schema.children === 'string') {
